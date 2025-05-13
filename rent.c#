@@ -1,0 +1,82 @@
+using System;
+
+public class Objet {
+    public string Type { get; private set; }
+    public int NombreDeJourReserver { get; private set; }
+    public bool IsDisponible { get; private set; }
+
+    public Objet(string type) {
+        Type = type;
+        NombreDeJourReserver = 0;
+        IsDisponible = true;
+    }
+
+    public bool Reserver(int jours) {
+        if (!IsDisponible) {
+            Console.WriteLine($"❌ Erreur : \"{Type}\" est déjà réservé.");
+            return false;
+        } 
+        if (jours <= 0) {
+            Console.WriteLine("❌ Erreur : Le nombre de jours doit être un nombre valide supérieur à zéro.");
+            return false;
+        }
+        NombreDeJourReserver = jours;
+        IsDisponible = false;
+        Console.WriteLine($"✅  \"{Type}\" a été réservé pour {jours} jours.");
+        return true;
+    }
+
+    public void AfficherEtat() {
+        Console.WriteLine($"\n📦 État de \"{Type}\" :");
+        Console.WriteLine($"   - Disponible : {(IsDisponible ? "Oui ✅" : "Non ❌")}");
+        Console.WriteLine($"   - Réservé pour : {NombreDeJourReserver} jour(s)");
+    }
+}
+
+public class Auto : Objet {
+    public Auto() : base("Auto") {}
+}
+
+public class Assiette : Objet {
+    public Assiette() : base("Assiette") {}
+}
+
+public class Program {
+    public static void Main() {
+        var voiture = new Auto();
+        var assiette = new Assiette();
+
+        Console.WriteLine("\nQuel objet souhaitez-vous réserver ?");
+        Console.WriteLine("1 - Auto");
+        Console.WriteLine("2 - Assiette");
+        Console.Write("Entrez le numéro de votre choix : ");
+
+        if (!int.TryParse(Console.ReadLine(), out int choix)) {
+            Console.WriteLine("❌ Choix invalide.");
+            return;
+        }
+
+        switch (choix) {
+            case 1:
+                RéserverObjet(voiture);
+                break;
+            case 2:
+                RéserverObjet(assiette);
+                break;
+            default:
+                Console.WriteLine("❌ Choix invalide.");
+                break;
+        }
+    }
+
+    private static void RéserverObjet(Objet obj) {
+        Console.Write($"Combien de jours souhaitez-vous réserver \"{obj.Type}\" ? : ");
+        if (!int.TryParse(Console.ReadLine(), out int jours)) {
+            Console.WriteLine("❌ Nombre de jours invalide.");
+            return;
+        }
+        if (obj.Reserver(jours)) {
+            obj.AfficherEtat();
+        }
+    }
+}
